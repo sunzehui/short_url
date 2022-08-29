@@ -8,10 +8,13 @@ import Loading from "./components/loading.vue";
 const longUrl = ref("");
 const { showMessage } = useMessage();
 const { execute, loading, response } = useServerApi<ShortResponse>(longUrl, {
-  onAfter(data) {
+  onSuccess(data) {
     if (data.status >= 200 && data.status <= 200) {
       showMessage(MType.SUCCESS, "created! 🎉");
     }
+  },
+  onError(error) {
+    showMessage(MType.ERROR, error.message || "error! please retry! 😪");
   },
 });
 const panelShow = computed(() => !!unref(response));

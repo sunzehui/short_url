@@ -1,3 +1,4 @@
 interface ServerApiOptions {
-  onAfter: (data: T) => any;
+  onSuccess: (data: T) => any;
+  onError: (err: any) => any;
 }
