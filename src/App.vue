@@ -5,6 +5,13 @@ import { useServerApi } from "./composeabe/useServerApi";
 import { MType } from "./types/message";
 import { isValidUrl } from "./utils/tools";
 import Loading from "./components/loading.vue";
+import { themeChange } from "theme-change";
+import { onMounted } from "vue";
+import themeList from "@/config/daisyui-theme";
+
+// 切换主题
+onMounted(() => themeChange(false));
+
 const longUrl = ref("");
 const { showMessage } = useMessage();
 const { execute, loading, response } = useServerApi<ShortResponse>(longUrl, {
@@ -17,6 +24,7 @@ const { execute, loading, response } = useServerApi<ShortResponse>(longUrl, {
     showMessage(MType.ERROR, error.message || "error! please retry! 😪");
   },
 });
+
 const panelShow = computed(() => !!unref(response));
 
 const createShortUrl = () => {
@@ -37,15 +45,20 @@ const copyShortUrl = () => {
   copy(link);
   showMessage(MType.SUCCESS, `🥳 copy successfully: ${link}`);
 };
-watch(loading, (val) => {
-  console.log(val);
-});
 </script>
 
 <template>
+  <header class="box-border flex justify-end pt-4 pr-4">
+    <select data-choose-theme>
+      <option value="">Default</option>
+      <template v-for="theme in themeList">
+        <option :value="theme">{{ theme }}</option>
+      </template>
+    </select>
+  </header>
   <div class="container flex items-center justify-center">
     <div class="flex flex-col -translate-y-12 wrapper">
-      <header
+      <div
         class="transition-all duration-300"
         :class="{ 'set-top': panelShow, 'set-center': !panelShow }"
       >
@@ -63,7 +76,7 @@ watch(loading, (val) => {
             </button>
           </div>
         </div>
-      </header>
+      </div>
       <transition name="content">
         <div
           class="self-start w-full transition-transform duration-300 border mockup-window bg-base-300"
@@ -106,7 +119,7 @@ watch(loading, (val) => {
 
 <style scoped>
 .container {
-  height: 100%;
+  height: calc(100% - 58px);
   margin: 0 auto;
 }
 .set-top {
